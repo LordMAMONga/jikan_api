@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jikan_api/cubit/anime_cubit.dart';
 
+import 'di/di.dart';
 
 class AnimeRatingScreen extends StatefulWidget {
   const AnimeRatingScreen({super.key});
@@ -11,7 +13,7 @@ class AnimeRatingScreen extends StatefulWidget {
 }
 
 class _AnimeRatingScreenState extends State<AnimeRatingScreen> {
-  final cubit = AnimeCubit();
+  final cubit = getIt<AnimeCubit>();
 
   @override
   void initState() {
@@ -29,14 +31,19 @@ class _AnimeRatingScreenState extends State<AnimeRatingScreen> {
         centerTitle: true,
         title: const Text(
           'Top Anime',
-          style: TextStyle(color: Colors.amberAccent, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.amberAccent,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: BlocBuilder<AnimeCubit, AnimeState>(
         bloc: cubit,
         builder: (context, state) {
           if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator(color: Colors.amberAccent));
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.amberAccent),
+            );
           }
 
           if (state.list != null) {
@@ -81,8 +88,8 @@ class _AnimeRatingScreenState extends State<AnimeRatingScreen> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: Image.network(
-                item.images.jpg.largeImageUrl,
+              child: CachedNetworkImage(
+                imageUrl: item.images.jpg.largeImageUrl,
                 fit: BoxFit.cover,
               ),
             ),
@@ -129,7 +136,10 @@ class _AnimeRatingScreenState extends State<AnimeRatingScreen> {
               right: 10,
               child: Text(
                 item.title,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
